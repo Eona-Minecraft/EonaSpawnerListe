@@ -5,10 +5,17 @@ import io.netty.handler.codec.http.HttpContentEncoder.Result;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.Formatter;
 import java.util.logging.Logger;
 
+import net.minecraft.server.v1_8_R1.Blocks;
+import net.minecraft.server.v1_8_R1.Item;
+
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpawnerListe extends JavaPlugin {
@@ -16,6 +23,7 @@ public class SpawnerListe extends JavaPlugin {
 	private MySQLDB conn = new MySQLDB();
 	private Logger l = null;
 	private MyConfig cfg = new MyConfig();
+	private MyEconomy ec = new MyEconomy();
 	
 	public void onEnable(){
 		this.l = this.getLogger();
@@ -32,8 +40,16 @@ public class SpawnerListe extends JavaPlugin {
 			l.info("Öffne Verbindung");
 			conn.openConnections();
 			if (conn.isOpened()){
-				l.info("Datenbankverbindung ge�ffnet.");
+				l.info("Datenbankverbindung geöffnet.");
+				l.info("Initialisiere Hook ins Economy-System via VaultApi");
+				ec.initEconomy(this);
+				if(ec.isEconInit()){
+					l.info("Hook ins Economy-System erfolgreich");
+				}else{
+					l.info("Hook ins Economy-System nicht erfolgreich");
+				}
 			}
+			
 		}else{
 			l.severe("DB-Verbindungsdaten fehlerhaft!");
 			this.getPluginLoader().disablePlugin(this);
@@ -56,21 +72,50 @@ public class SpawnerListe extends JavaPlugin {
 		}
 		return c;
 	}
-	
+	//TODO: Spawnerlimit abfragen und drauf prüfen
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
 		boolean erg = false;
+		Player x = getPlayerOfName(sender.getName());
+		double balance = 0;
 		switch(label){
 		case "getSpawner":
-			//TODO: GetSpawner mit Ekonomie implementieren
+			if(ec.isEconInit()){
+				balance  = ec.getEconomy().getBalance(x);
+				if(balance >= cfg.getSpawnerpreis()){
+					ec.getEconomy().withdrawPlayer(x, (double) cfg.getSpawnerpreis());
+					x.getInventory().addItem(new org.bukkit.inventory.ItemStack(Material.MOB_SPAWNER, 1));
+				}else{
+					sender.sendMessage("Du hast nicht genügend Geld! ");
+					sender.sendMessage("Was du hast:     " + String.format("%.2f", balance));
+					sender.sendMessage("Was du brauchst: " + cfg.getSpawnerpreis());
+				}
+			}else{
+				sender.sendMessage("Konnte Befehl nicht ausführen. Das Economy-System ist nicht initialisiert!");
+			}
 			erg = true;
 		case "getSpawnerPreis":
-			//TODO: GetSpawner mit Ekonomie implementieren
+			sender.sendMessage("Um einen Spawner zu kaufen brauchst du " + cfg.getSpawnerpreis() + " EONA-Cash!");
 			erg = true;
 		case "spawnerliste":
 			if(args.length > 0){
 				erg = true;
-				switch(args[0]){
-				
+				if(args[0] == "version"){
+					sender.sendMessage("Spawnerliste Version: ");
+				}else if(args.length > 1){
+					switch(args[0]){
+					case "inc":
+						
+						break;
+					case "dec":
+						break;
+					case "show":
+						break;
+					case "reset":
+						break;
+					}
+				}else{
+					sender.sendMessage("Keine oder zu wenige Argumente!");
+					sender.sendMessage("Syntax: /spawnerliste <version|dec|inc|show|reset> [playername]");
 				}
 			}else{
 				erg = false;
@@ -97,6 +142,15 @@ public class SpawnerListe extends JavaPlugin {
 				l.info(e.getMessage());
 			}
 		}
+	}
+	
+	
+	private Player getPlayerOfUUID(String uuid){
+		return this.getServer().getPlayer(uuid);
+	}
+	
+	private Player getPlayerOfName(String name){
+		return this.getServer().getPlayerExact(name);
 	}
 	
 	

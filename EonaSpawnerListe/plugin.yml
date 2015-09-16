@@ -3,6 +3,7 @@ version: 0.1
 author: Bloodrayne1995
 website: http://eona-minecraft.de
 main: eonaminecraft.SpawnerListe
+depend: [Vault]
 commands:
   getSpawner:
     description: Gibt dir einen Spawner
