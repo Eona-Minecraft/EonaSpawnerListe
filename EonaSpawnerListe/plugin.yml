@@ -8,12 +8,9 @@ commands:
   getSpawner:
     description: Gibt dir einen Spawner
     permission: eona.spawnerliste.user
-    usage: Syntax --> /getSpawner
   getSpawnerPreis:
     description: Ermittelt dir den Spawner-Preis
     permission: eona.spawnerliste.user
-    usage: Syntax --> /getSpawnerPreis
   spawnerliste:
     description: Admin-Befehle für die Spawner-Liste
     permission: eona.spawnerliste.admin
-    usage: Syntax --> /spawnerliste <cmd> <parameter-arr>
