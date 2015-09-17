@@ -11,6 +11,7 @@ public class MyConfig {
 	private String dbUser = "";
 	private String dbPass = "";
 	private int spawnerpreis = 0;
+	private int spawnerlimit = 10;
 	
 	
 	public String getDbHost() {
@@ -30,12 +31,16 @@ public class MyConfig {
 	}
 	
 	
+	public int getSpawnerlimit() {
+		return spawnerlimit;
+	}
 	public void readConfig(FileConfiguration x){
 		dbHost = x.getString("dbhost");
 		dbUser = x.getString("dbuser");
 		dbPass = x.getString("dbpass");
 		dbName = x.getString("dbname");
 		spawnerpreis = x.getInt("preis");
+		spawnerlimit = x.getInt("limit");
 	}
 	
 	

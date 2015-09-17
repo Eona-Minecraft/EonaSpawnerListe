@@ -1,10 +1,8 @@
 package eonaminecraft;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import com.mysql.jdbc.util.ResultSetUtil;
 
 public class MySQLDB {
 

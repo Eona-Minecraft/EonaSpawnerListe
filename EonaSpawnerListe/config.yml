@@ -1,5 +1,7 @@
+temp: temp
 dbhost: localhost
 dbuser: spawnerliste
 dbpass: spawnerliste
 dbname: spawnerliste
 preis: 75000 
+limit: 10

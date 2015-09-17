@@ -1,21 +1,18 @@
 package eonaminecraft;
 
-import io.netty.handler.codec.http.HttpContentEncoder.Result;
 
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.util.Formatter;
+import java.util.UUID;
 import java.util.logging.Logger;
 
-import net.minecraft.server.v1_8_R1.Blocks;
-import net.minecraft.server.v1_8_R1.Item;
 
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpawnerListe extends JavaPlugin {
@@ -72,7 +69,8 @@ public class SpawnerListe extends JavaPlugin {
 		}
 		return c;
 	}
-	//TODO: Spawnerlimit abfragen und drauf prüfen
+
+	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
 		boolean erg = false;
 		Player x = getPlayerOfName(sender.getName());
@@ -82,8 +80,16 @@ public class SpawnerListe extends JavaPlugin {
 			if(ec.isEconInit()){
 				balance  = ec.getEconomy().getBalance(x);
 				if(balance >= cfg.getSpawnerpreis()){
-					ec.getEconomy().withdrawPlayer(x, (double) cfg.getSpawnerpreis());
-					x.getInventory().addItem(new org.bukkit.inventory.ItemStack(Material.MOB_SPAWNER, 1));
+					if(isUserRegistred(x.getUniqueId())){
+						registerUser(x.getUniqueId());
+					}
+					if(getAnzahlSpawnerFromUUID(x.getUniqueId()) < cfg.getSpawnerlimit()){
+						ec.getEconomy().withdrawPlayer(x, cfg.getSpawnerpreis());
+						x.getInventory().addItem(new ItemStack(Material.MOB_SPAWNER,1));
+						addSpawnerToUuid(x.getUniqueId());
+					}else{
+						sender.sendMessage("Du hast schon zu viele Spawner.");
+					}
 				}else{
 					sender.sendMessage("Du hast nicht genügend Geld! ");
 					sender.sendMessage("Was du hast:     " + String.format("%.2f", balance));
@@ -102,17 +108,36 @@ public class SpawnerListe extends JavaPlugin {
 				if(args[0] == "version"){
 					sender.sendMessage("Spawnerliste Version: ");
 				}else if(args.length > 1){
-					switch(args[0]){
-					case "inc":
-						
-						break;
-					case "dec":
-						break;
-					case "show":
-						break;
-					case "reset":
-						break;
+					try{
+						Player p = getPlayerOfName(args[1]);
+						if(p == null){
+							throw new Exception("Spieler '" + args[1] + "' nicht gefunden");
+						}
+						switch(args[0]){
+						case "inc":
+							if(getAnzahlSpawnerFromUUID(p.getUniqueId()) == cfg.getSpawnerlimit()){
+								addSpawnerToUuid(p.getUniqueId());
+								sender.sendMessage("1 Spawner an Spieler '" + p.getDisplayName() + "' gegeben");
+							}else{
+								sender.sendMessage("Spieler '" + p.getDisplayName() + "' hat schon zu viele Spawner gegeben");
+							}
+							break;
+						case "dec":
+							decSpawnerToUuid(p.getUniqueId());
+							sender.sendMessage("1 Spawner von Spieler '" + p.getDisplayName() + "' entfernt");
+							break;
+						case "show":
+							sender.sendMessage("Spieler '" + p.getDisplayName() + "' hat " + getAnzahlSpawnerFromUUID(p.getUniqueId()) + " von " + cfg.getSpawnerlimit() + " Spawner");
+							break;
+						case "reset":
+							deleteUUID(p.getUniqueId());
+							sender.sendMessage("Spieler '" + p.getDisplayName() + "' aus der SpawnerListe entfernt");
+							break;
+						}
+					}catch(Exception e){
+						sender.sendMessage(e.getMessage());
 					}
+					
 				}else{
 					sender.sendMessage("Keine oder zu wenige Argumente!");
 					sender.sendMessage("Syntax: /spawnerliste <version|dec|inc|show|reset> [playername]");
@@ -145,10 +170,10 @@ public class SpawnerListe extends JavaPlugin {
 	}
 	
 	
-	private Player getPlayerOfUUID(String uuid){
-		return this.getServer().getPlayer(uuid);
-	}
-	
+//	private Player getPlayerOfUUID(String uuid){
+//		return this.getServer().getPlayer(uuid);
+//	}
+//	
 	private Player getPlayerOfName(String name){
 		return this.getServer().getPlayerExact(name);
 	}
@@ -164,20 +189,21 @@ public class SpawnerListe extends JavaPlugin {
 	private final String SELECT_IS_REGISTRED = "SELECT COUNT(*) FROM spawner_liste WHERE uuid='%uuid%'";
 	
 	
-	private void addSpawnerTooUuid(String uuid){
-		boolean erg = isUserRegistred(uuid);
+	private void addSpawnerToUuid(UUID id){
+		boolean erg = isUserRegistred(id);
 		if(!erg){
-			registerUser(uuid);
+			registerUser(id);
 		}
-		conn.execute(UPDATE_ADD_SPAWNER.replace("%uuid%", uuid));
+		conn.execute(UPDATE_ADD_SPAWNER.replace("%uuid%", id.toString()));
 	}
 	
-	private void registerUser(String uuid){
-		conn.execute(CREATE_NEW_ENTRY.replace("%uuid%", uuid));
+	
+	private void registerUser(UUID id){
+		conn.execute(CREATE_NEW_ENTRY.replace("%uuid%", id.toString()));
 	}
 	
-	private boolean isUserRegistred(String uuid){
-		ResultSet x = conn.query(SELECT_IS_REGISTRED.replace("%uuid%", uuid));
+	private boolean isUserRegistred(UUID id){
+		ResultSet x = conn.query(SELECT_IS_REGISTRED.replace("%uuid%", id.toString()));
 		boolean erg = false;
 		try {
 			while(x.next()){
@@ -191,16 +217,18 @@ public class SpawnerListe extends JavaPlugin {
 		return erg;
 	}
 	
-	private void decSpawnerToUuid(String uuid){
-		boolean erg = isUserRegistred(uuid);
+	private void decSpawnerToUuid(UUID id){
+		boolean erg = isUserRegistred(id);
 		if(!erg){
-			registerUser(uuid);
+			registerUser(id);
 		}
-		conn.execute(UPDATE_DEC_SPAWNER.replace("%uuid%", uuid));
+		if(!(getAnzahlSpawnerFromUUID(id) <= 0)){
+			conn.execute(UPDATE_DEC_SPAWNER.replace("%uuid%", id.toString()));
+		}
 	}
 	
-	private int getAnzahlSpawnerFromUUID(String uuid){
-		ResultSet x = conn.query(SELECT_GET_SPAWNER.replace("%uuid%", uuid));
+	private int getAnzahlSpawnerFromUUID(UUID id){
+		ResultSet x = conn.query(SELECT_GET_SPAWNER.replace("%uuid%", id.toString()));
 		int erg = -1;
 		try{
 			while(x.next()){
@@ -212,8 +240,8 @@ public class SpawnerListe extends JavaPlugin {
 		return erg;
 	}
 	
-	private void deleteUUID(String uuid){
-		conn.execute(DELETE_ENTRY.replace("%uuid%", uuid));
+	private void deleteUUID(UUID id){
+		conn.execute(DELETE_ENTRY.replace("%uuid%", id.toString()));
 	}
 
 
