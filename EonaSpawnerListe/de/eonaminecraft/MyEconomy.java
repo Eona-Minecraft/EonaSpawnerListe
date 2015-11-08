@@ -8,7 +8,7 @@ public class MyEconomy {
 
 	private Economy econ = null;
 	
-	public void initEconomy(SpawnerListe x){
+	public void initEconomy(MainPlugin x){
 		if (x.getServer().getPluginManager().getPlugin("Vault") != null) {
 			RegisteredServiceProvider<Economy> rsp = x.getServer().getServicesManager().getRegistration(Economy.class);
 	        if (rsp != null) {

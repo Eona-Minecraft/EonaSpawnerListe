@@ -13,7 +13,8 @@ public class MySQLDB {
 	public Logger l = null;
 	
 	
-	public MySQLDB(){
+	public MySQLDB(Logger x){
+		l = x;
 		try{
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		}catch(Exception e){

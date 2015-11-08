@@ -89,6 +89,12 @@ public class MyConfig {
 	private MainPlugin plugin = null;
 	
 	/**
+	 * GER: Zeigt an ob Debug-Meldungen in der Console erscheinen soll
+	 * ENG: Indicates wheter debug messages shall print in the console or not.
+	 */
+	private boolean debug = false;
+	
+	/**
 	 * GER: Gibt die Referenz von der Plugin-Klasse zurück
 	 * ENG: Returns the reference of the plugin class
 	 * @return
@@ -158,6 +164,24 @@ public class MyConfig {
 	 */
 	public int getSpawnerlimit() {
 		return spawnerlimit;
+	}
+	
+	/**
+	 * GER: Gibt an ob das Plugin im Debug-Modus ist oder nicht
+	 * ENG: Indicates whether the plugin is in debug-mode or not
+	 * @return
+	 */
+	public boolean isDebug(){
+		return debug;
+	}
+	
+	/**
+	 * GER: Setzt die Debug-Variable
+	 * ENG: Sets the debug-variable
+	 * @param x
+	 */
+	public void setDebug(boolean x){
+		debug = x;
 	}
 	
 	/**
