@@ -1,19 +1,15 @@
 package eonaminecraft;
 
-import java.io.Console;
-
 import org.bukkit.Color;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MainPlugin extends JavaPlugin{
 	
 	private MyConfig mycfg = new MyConfig();
-	private MyEconomy myEco= new MyEconomy(); //TODO: Economy überarbeiten
+	private MyEconomy myEco= new MyEconomy(); 
 	private SpawnerListe liste = new SpawnerListe();
 	
 	
@@ -100,7 +96,7 @@ public class MainPlugin extends JavaPlugin{
 									if(p == null){
 										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
 									}else{
-										givePlayerMobSpawner(p);
+										liste.givePlayerMobSpawner(p);
 										sender.sendMessage("Spieler '" + p.getDisplayName() + "' wurde um 1 Spawner bereichert");
 									}
 								}else{
@@ -113,8 +109,7 @@ public class MainPlugin extends JavaPlugin{
 									if(p == null){
 										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
 									}else{
-										givePlayerMobSpawner(p);
-										sender.sendMessage("Spieler '" + p.getDisplayName() + "' wurde um 1 Spawner bereichert");
+										sender.sendMessage("Spieler '" + p.getDisplayName() + "' hat " + Color.AQUA + liste.getAnzahlSpawnerOfPlayer(p.getUniqueId()) + Color.WHITE + " Spawner" );
 									}
 								}else{
 									sender.sendMessage("Spieler wurde nicht angegeben");
@@ -134,12 +129,14 @@ public class MainPlugin extends JavaPlugin{
 						if(sender.hasPermission("spawnerliste.user")){
 							switch(args[0]){
 							case "getSpawnerPreis":
-								
+								sender.sendMessage("Der Spawnerpreis beträgt " + Color.AQUA + mycfg.getSpawnerpreis() + Color.WHITE + myEco.getCurrencyPlural());
 								break;
 							case "getSpawnerLimit":
-								
+								sender.sendMessage("Das Spawnerlimit liegt bei " + Color.AQUA + mycfg.getSpawnerlimit() + Color.WHITE + " Spawner!");
 								break;
-							
+							case "getSpawner":
+								liste.addSpawner2Player((Player)sender);
+								break;
 							}
 						}else{
 							sender.sendMessage("Du hast keine Berechtigung auf diesen Befehl");
@@ -165,13 +162,6 @@ public class MainPlugin extends JavaPlugin{
 	public void logInfo(String info){
 		this.getLogger().info(info);
 	}
-
-	
-	
-	private void givePlayerMobSpawner(Player x){
-		x.getInventory().addItem(new ItemStack(Material.MOB_SPAWNER));
-	}
-	
 	
 	private void showAdminCmd(CommandSender sender){
 		sender.sendMessage(Color.YELLOW + "Admin-Commands:");
@@ -185,3 +175,5 @@ public class MainPlugin extends JavaPlugin{
 		sender.sendMessage(Color.GREEN + "reload" + Color.WHITE +": Liest die Config neu ein" );
 	}
 }
+
+

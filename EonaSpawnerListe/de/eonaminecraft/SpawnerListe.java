@@ -3,6 +3,11 @@ package eonaminecraft;
 import java.sql.ResultSet;
 import java.util.UUID;
 
+import org.bukkit.Color;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 /**
  * GER: Stellt Methoden bereit, die dem Plugin helfen Spawner zu verwalten
  * ENG: Offers methods for handling the spawner management
@@ -20,32 +25,13 @@ public class SpawnerListe{
 	
 	
 	private MainPlugin plugin = null;
-
+	private MyEconomy myEco = new MyEconomy();
 
 	public MainPlugin getPlugin() {
 		return plugin;
 	}
 
-
-	public void setPlugin(MainPlugin plugin) {
-		this.plugin = plugin;
-	}
 	
-	
-	public void createNewEntry(UUID id){
-		try {
-			if(plugin.getMyConfiguration().isDebug()){
-				
-			}
-			MySQLDB x = new MySQLDB(plugin.getLogger());
-			x.setConnectionData(plugin.getMyConfiguration().getDbHost(), plugin.getMyConfiguration().getDbUser(), plugin.getMyConfiguration().getDbPass(), plugin.getMyConfiguration().getDbName());
-			x.openConnections();
-			x.execute(CREATE_NEW_ENTRY.replace("%uuid%",id.toString()));
-			x.closeConnections();
-		} catch (Exception e) {
-			throw e;
-		}
-	}
 	
 	public void addSpawner(UUID id){
 		try {
@@ -83,24 +69,6 @@ public class SpawnerListe{
 		}
 	}
 	
-	public int getAnzahlSpawnerOfPlayer(UUID id) throws Exception{
-		try {
-			int anzahl = 0;
-			MySQLDB x = new MySQLDB(plugin.getLogger());
-			x.setConnectionData(plugin.getMyConfiguration().getDbHost(), plugin.getMyConfiguration().getDbUser(), plugin.getMyConfiguration().getDbPass(), plugin.getMyConfiguration().getDbName());
-			x.openConnections();
-			ResultSet rs = x.query(SELECT_GET_SPAWNER.replace("%uuid%", id.toString()));
-			
-			while(rs.next()){
-				anzahl = rs.getInt(0);
-			}
-			rs.close();
-			x.closeConnections();
-			return anzahl;
-		} catch (Exception e) {
-			throw e;
-		}
-	}
 	
 	public boolean isUserRegistred(UUID id) throws Exception{
 		try {
@@ -120,5 +88,65 @@ public class SpawnerListe{
 			throw e;
 		}
 	}
+
+
+	public void setPlugin(MainPlugin plugin) {
+		this.plugin = plugin;
+		myEco.initEconomy(plugin);
+	}
 	
+	public void createNewEntry(UUID id){
+		try {
+			if(plugin.getMyConfiguration().isDebug()){
+				
+			}
+			MySQLDB x = new MySQLDB(plugin.getLogger());
+			x.setConnectionData(plugin.getMyConfiguration().getDbHost(), plugin.getMyConfiguration().getDbUser(), plugin.getMyConfiguration().getDbPass(), plugin.getMyConfiguration().getDbName());
+			x.openConnections();
+			x.execute(CREATE_NEW_ENTRY.replace("%uuid%",id.toString()));
+			x.closeConnections();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	
+	public int getAnzahlSpawnerOfPlayer(UUID id){
+		try {
+			int anzahl = 0;
+			MySQLDB x = new MySQLDB(plugin.getLogger());
+			x.setConnectionData(plugin.getMyConfiguration().getDbHost(), plugin.getMyConfiguration().getDbUser(), plugin.getMyConfiguration().getDbPass(), plugin.getMyConfiguration().getDbName());
+			x.openConnections();
+			ResultSet rs = x.query(SELECT_GET_SPAWNER.replace("%uuid%", id.toString()));
+			
+			while(rs.next()){
+				anzahl = rs.getInt(0);
+			}
+			rs.close();
+			x.closeConnections();
+			return anzahl;
+		} catch (Exception e) {
+			plugin.logInfo(e.getMessage() );
+			return 0;
+		}
+	}
+	
+	
+	
+	public void givePlayerMobSpawner(Player x){
+		x.getInventory().addItem(new ItemStack(Material.MOB_SPAWNER));
+	}
+
+	public void addSpawner2Player(Player x){
+		if(myEco.getCurrentBalanceofPlayer(x) >= plugin.getMyConfiguration().getSpawnerpreis()){
+			addSpawner(x.getUniqueId());
+			givePlayerMobSpawner(x);
+			myEco.decreaseBalanceOfPlayer(x, plugin.getMyConfiguration().getSpawnerpreis());
+			x.sendMessage("Du hast einen Spawner gekauft");
+		}else{
+			x.sendMessage("Du hast nicht genügend Geld.");
+			x.sendMessage("Du hast: " + Color.AQUA + myEco.getCurrentBalanceofPlayer(x) + Color.WHITE + myEco.getCurrencyPlural());
+		}
+	}
+
 }
