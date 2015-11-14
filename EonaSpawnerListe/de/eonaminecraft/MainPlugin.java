@@ -15,7 +15,9 @@ public class MainPlugin extends JavaPlugin{
 	
 	public void onEnable(){
 		//Config laden
+		
 		logInfo("Lade Config");
+		mycfg.setPlugin(this);
 		mycfg.readConfig();
 		logInfo("Config geladen");
 		

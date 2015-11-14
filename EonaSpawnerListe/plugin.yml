@@ -5,12 +5,8 @@ website: http://eona-minecraft.de
 main: eonaminecraft.MainPlugin
 depend: [Vault]
 commands:
-  getSpawner:
-    description: Gibt dir einen Spawner
-    permission: eona.spawnerliste.user
-  getSpawnerPreis:
-    description: Ermittelt dir den Spawner-Preis
-    permission: eona.spawnerliste.user
+  sl:
+    description: Zugriff auf die Spawnerliste
   spawnerliste:
-    description: Admin-Befehle für die Spawner-Liste
-    permission: eona.spawnerliste.admin
+    description: Zugriff auf die Spawnerliste
+
