@@ -31,8 +31,6 @@ public class SpawnerListe{
 		return plugin;
 	}
 
-	
-	
 	public void addSpawner(UUID id){
 		try {
 			MySQLDB x = new MySQLDB(plugin.getLogger());

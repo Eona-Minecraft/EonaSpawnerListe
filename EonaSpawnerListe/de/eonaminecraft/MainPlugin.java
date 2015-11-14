@@ -28,9 +28,10 @@ public class MainPlugin extends JavaPlugin{
 	}
 	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
-		if(label.equalsIgnoreCase("sl")){
+		if(command.getName().equalsIgnoreCase("sl") || command.getName().equalsIgnoreCase("spawnerliste")){
+			printArgs2Console(args);
 			if(args.length > 0){
-				if(args[0] == "admin"){
+				if(args[0].equalsIgnoreCase("admin")){
 					if(sender.isOp() || !(sender instanceof Player) || sender.hasPermission("spawnerliste.admin")){
 						if(args.length > 1){
 							//Durch admin cmds gehen
@@ -144,15 +145,15 @@ public class MainPlugin extends JavaPlugin{
 							sender.sendMessage("Du hast keine Berechtigung auf diesen Befehl");
 						}
 					}else{
-						sender.sendMessage(Color.RED + "Diese Bfehle können nicht in der Konsole ausgeführt werden");
+						sender.sendMessage(Color.RED + "Diese Befehle können nicht in der Konsole ausgeführt werden");
 					}
 				}
 			}else{
 				//Version anzeigen und hilfe
 				
-			}
+			}//args.length > 0
 			return true;
-		}
+		}//command.getName().equalsIgnoreCase("sl") || command.getName().equalsIgnoreCase("spawnerliste")
 		
 		return false;
 	}
@@ -175,6 +176,12 @@ public class MainPlugin extends JavaPlugin{
 		sender.sendMessage(Color.GREEN + "give <Spieler>" + Color.WHITE +": Gibt dem Spieler einen Spawner" );
 		sender.sendMessage(Color.GREEN + "get <Spieler>" + Color.WHITE +": Gibt die Anzahl Spawner aus" );
 		sender.sendMessage(Color.GREEN + "reload" + Color.WHITE +": Liest die Config neu ein" );
+	}
+	
+	private void printArgs2Console(String args[]){
+		for(int i = 0; i < args.length; i++){
+			logInfo("Argument [" + i + "] = " + args[i]);
+		}
 	}
 }
 
