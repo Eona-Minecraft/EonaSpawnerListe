@@ -3,6 +3,7 @@ package eonaminecraft;
 import java.sql.ResultSet;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -157,7 +158,8 @@ public class SpawnerListe{
 			x.sendMessage("Du hast einen Spawner gekauft");
 		}else{
 			x.sendMessage("Du hast nicht genügend Geld.");
-			x.sendMessage("Du hast: " + Color.AQUA + myEco.getCurrentBalanceofPlayer(x) + Color.WHITE + myEco.getCurrencyPlural());
+			x.sendMessage("Du hast: " + ChatColor.AQUA + myEco.getCurrentBalanceofPlayer(x) + ChatColor.WHITE + myEco.getCurrencyPlural());
+			x.sendMessage("Du brauchst: " + ChatColor.AQUA + plugin.getMyConfiguration().getSpawnerpreis() + ChatColor.WHITE + myEco.getCurrencyPlural());
 		}
 	}
 

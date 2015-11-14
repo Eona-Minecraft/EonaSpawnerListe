@@ -1,5 +1,6 @@
 package eonaminecraft;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -112,7 +113,7 @@ public class MainPlugin extends JavaPlugin{
 									if(p == null){
 										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
 									}else{
-										sender.sendMessage("Spieler '" + p.getDisplayName() + "' hat " + Color.AQUA + liste.getAnzahlSpawnerOfPlayer(p.getUniqueId()) + Color.WHITE + " Spawner" );
+										sender.sendMessage("Spieler '" + p.getDisplayName() + "' hat " + liste.getAnzahlSpawnerOfPlayer(p.getUniqueId())  + " Spawner" );
 									}
 								}else{
 									sender.sendMessage("Spieler wurde nicht angegeben");
@@ -132,10 +133,10 @@ public class MainPlugin extends JavaPlugin{
 						if(sender.hasPermission("spawnerliste.user")){
 							switch(args[0]){
 							case "getSpawnerPreis":
-								sender.sendMessage("Der Spawnerpreis beträgt " + Color.AQUA + mycfg.getSpawnerpreis() + Color.WHITE + myEco.getCurrencyPlural());
+								sender.sendMessage("Der Spawnerpreis beträgt " + mycfg.getSpawnerpreis() + myEco.getCurrencyPlural());
 								break;
 							case "getSpawnerLimit":
-								sender.sendMessage("Das Spawnerlimit liegt bei " + Color.AQUA + mycfg.getSpawnerlimit() + Color.WHITE + " Spawner!");
+								sender.sendMessage("Das Spawnerlimit liegt bei " + mycfg.getSpawnerlimit() + " Spawner!");
 								break;
 							case "getSpawner":
 								liste.addSpawner2Player((Player)sender);
@@ -145,7 +146,7 @@ public class MainPlugin extends JavaPlugin{
 							sender.sendMessage("Du hast keine Berechtigung auf diesen Befehl");
 						}
 					}else{
-						sender.sendMessage(Color.RED + "Diese Befehle können nicht in der Konsole ausgeführt werden");
+						sender.sendMessage("Diese Befehle können nicht in der Konsole ausgeführt werden");
 					}
 				}
 			}else{
@@ -169,13 +170,13 @@ public class MainPlugin extends JavaPlugin{
 	private void showAdminCmd(CommandSender sender){
 		sender.sendMessage(Color.YELLOW + "Admin-Commands:");
 		sender.sendMessage("/sl admin <cmd>");
-		sender.sendMessage(Color.GREEN + "add <Spieler>" + Color.WHITE +": Gibt dem Spieler einen Spawner in der DB" );
-		sender.sendMessage(Color.GREEN + "dec <Spieler>" + Color.WHITE +": Entfernt dem Spieler einen Spawner in der DB" );
-		sender.sendMessage(Color.GREEN + "register <Spieler>" + Color.WHITE +": Fügt einen Spieler der DB hinzu" );
-		sender.sendMessage(Color.GREEN + "unregister <Spieler>" + Color.WHITE +": Entfernt den Spieler aus der DB" );
-		sender.sendMessage(Color.GREEN + "give <Spieler>" + Color.WHITE +": Gibt dem Spieler einen Spawner" );
-		sender.sendMessage(Color.GREEN + "get <Spieler>" + Color.WHITE +": Gibt die Anzahl Spawner aus" );
-		sender.sendMessage(Color.GREEN + "reload" + Color.WHITE +": Liest die Config neu ein" );
+		sender.sendMessage("add <Spieler>: Gibt dem Spieler einen Spawner in der DB" );
+		sender.sendMessage("dec <Spieler>: Entfernt dem Spieler einen Spawner in der DB" );
+		sender.sendMessage("register <Spieler>: Fügt einen Spieler der DB hinzu" );
+		sender.sendMessage("unregister <Spieler>: Entfernt den Spieler aus der DB" );
+		sender.sendMessage("give <Spieler>: Gibt dem Spieler einen Spawner" );
+		sender.sendMessage("get <Spieler>: Gibt die Anzahl Spawner aus" );
+		sender.sendMessage("reload: Liest die Config neu ein" );
 	}
 	
 	private void printArgs2Console(String args[]){
