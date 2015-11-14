@@ -33,42 +33,54 @@ public class SpawnerListe{
 
 	public void addSpawner(UUID id){
 		try {
+			if(!isUserRegistred(id)){
+				createNewEntry(id);
+			}
 			MySQLDB x = new MySQLDB(plugin.getLogger());
 			x.setConnectionData(plugin.getMyConfiguration().getDbHost(), plugin.getMyConfiguration().getDbUser(), plugin.getMyConfiguration().getDbPass(), plugin.getMyConfiguration().getDbName());
 			x.openConnections();
 			x.execute(UPDATE_ADD_SPAWNER.replace("%uuid%",id.toString()));
 			x.closeConnections();
 		} catch (Exception e) {
-			throw e;
+			plugin.logInfo(e.getMessage());
+			plugin.logInfo(e.getStackTrace().toString());
 		}
 	}
 	
 	public void decSpawner(UUID id){
 		try {
+			if(!isUserRegistred(id)){
+				createNewEntry(id);
+			}
 			MySQLDB x = new MySQLDB(plugin.getLogger());
 			x.setConnectionData(plugin.getMyConfiguration().getDbHost(), plugin.getMyConfiguration().getDbUser(), plugin.getMyConfiguration().getDbPass(), plugin.getMyConfiguration().getDbName());
 			x.openConnections();
 			x.execute(UPDATE_DEC_SPAWNER.replace("%uuid%",id.toString()));
 			x.closeConnections();
 		} catch (Exception e) {
-			throw e;
+			plugin.logInfo(e.getMessage());
+			plugin.logInfo(e.getStackTrace().toString());
 		}
 	}
 	
 	public void deleteEntry(UUID id){
 		try {
+			if(!isUserRegistred(id)){
+				createNewEntry(id);
+			}
 			MySQLDB x = new MySQLDB(plugin.getLogger());
 			x.setConnectionData(plugin.getMyConfiguration().getDbHost(), plugin.getMyConfiguration().getDbUser(), plugin.getMyConfiguration().getDbPass(), plugin.getMyConfiguration().getDbName());
 			x.openConnections();
 			x.execute(DELETE_ENTRY.replace("%uuid%",id.toString()));
 			x.closeConnections();
 		} catch (Exception e) {
-			throw e;
+			plugin.logInfo(e.getMessage());
+			plugin.logInfo(e.getStackTrace().toString());
 		}
 	}
 	
 	
-	public boolean isUserRegistred(UUID id) throws Exception{
+	public boolean isUserRegistred(UUID id) {
 		try {
 			int anzahl = 0;
 			MySQLDB x = new MySQLDB(plugin.getLogger());
@@ -77,13 +89,15 @@ public class SpawnerListe{
 			ResultSet rs = x.query(SELECT_IS_REGISTRED.replace("%uuid%", id.toString()));
 			
 			while(rs.next()){
-				anzahl = rs.getInt(0);
+				anzahl = rs.getInt(1);
 			}
 			rs.close();
 			x.closeConnections();
 			return anzahl > 0;
 		} catch (Exception e) {
-			throw e;
+			plugin.logInfo(e.getMessage());
+			plugin.logInfo(e.getStackTrace().toString());
+			return false;
 		}
 	}
 
@@ -104,7 +118,7 @@ public class SpawnerListe{
 			x.execute(CREATE_NEW_ENTRY.replace("%uuid%",id.toString()));
 			x.closeConnections();
 		} catch (Exception e) {
-			throw e;
+			plugin.logInfo(e.getMessage());
 		}
 	}
 	
@@ -118,7 +132,7 @@ public class SpawnerListe{
 			ResultSet rs = x.query(SELECT_GET_SPAWNER.replace("%uuid%", id.toString()));
 			
 			while(rs.next()){
-				anzahl = rs.getInt(0);
+				anzahl = rs.getInt(1);
 			}
 			rs.close();
 			x.closeConnections();

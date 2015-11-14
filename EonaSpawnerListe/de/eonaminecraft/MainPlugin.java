@@ -29,7 +29,7 @@ public class MainPlugin extends JavaPlugin{
 	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
 		if(command.getName().equalsIgnoreCase("sl") || command.getName().equalsIgnoreCase("spawnerliste")){
-			printArgs2Console(args);
+			//printArgs2Console(args);
 			if(args.length > 0){
 				if(args[0].equalsIgnoreCase("admin")){
 					if(sender.isOp() || !(sender instanceof Player) || sender.hasPermission("spawnerliste.admin")){

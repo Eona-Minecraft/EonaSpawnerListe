@@ -32,6 +32,7 @@ public class MySQLDB {
 		x.setDbName(n);
 		x.setDbPass(p);
 		x.setDbUser(u);
+		//l.info(x.toString());
 		setConnectionData(x);
 	}
 	
@@ -84,7 +85,7 @@ public class MySQLDB {
 		if(isOpened()){
 			try{
 				connection.close();
-				l.info("DB-Verbindung geschlossen");
+				//l.info("DB-Verbindung geschlossen");
 			}catch(Exception e){
 				l.info("Konnte DB-Verbindung nicht schlieﬂen:");
 				l.info(e.getMessage());
