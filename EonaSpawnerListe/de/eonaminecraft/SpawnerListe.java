@@ -151,15 +151,20 @@ public class SpawnerListe{
 	}
 
 	public void addSpawner2Player(Player x){
-		if(myEco.getCurrentBalanceofPlayer(x) >= plugin.getMyConfiguration().getSpawnerpreis()){
-			addSpawner(x.getUniqueId());
-			givePlayerMobSpawner(x);
-			myEco.decreaseBalanceOfPlayer(x, plugin.getMyConfiguration().getSpawnerpreis());
-			x.sendMessage("Du hast einen Spawner gekauft");
+		if(getAnzahlSpawnerOfPlayer(x.getUniqueId()) <= plugin.getMyConfiguration().getSpawnerlimit()){
+			if(myEco.getCurrentBalanceofPlayer(x) >= plugin.getMyConfiguration().getSpawnerpreis()){
+				addSpawner(x.getUniqueId());
+				givePlayerMobSpawner(x);
+				myEco.decreaseBalanceOfPlayer(x, plugin.getMyConfiguration().getSpawnerpreis());
+				x.sendMessage("Du hast einen Spawner gekauft");
+			}else{
+				x.sendMessage("Du hast nicht genügend Geld.");
+				x.sendMessage("Du hast: "  + myEco.getCurrentBalanceofPlayer(x)  + myEco.getCurrencyPlural());
+				x.sendMessage("Du brauchst: "  + plugin.getMyConfiguration().getSpawnerpreis()  + myEco.getCurrencyPlural());
+			}
 		}else{
-			x.sendMessage("Du hast nicht genügend Geld.");
-			x.sendMessage("Du hast: " + ChatColor.AQUA + myEco.getCurrentBalanceofPlayer(x) + ChatColor.WHITE + myEco.getCurrencyPlural());
-			x.sendMessage("Du brauchst: " + ChatColor.AQUA + plugin.getMyConfiguration().getSpawnerpreis() + ChatColor.WHITE + myEco.getCurrencyPlural());
+			x.sendMessage("Du hast schon genug Spawner!");	
+			
 		}
 	}
 
