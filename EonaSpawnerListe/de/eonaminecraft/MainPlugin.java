@@ -2,6 +2,7 @@ package eonaminecraft;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -27,7 +28,23 @@ public class MainPlugin extends JavaPlugin{
 		myEco.initEconomy(this);
 		
 	}
-	
+
+	public Player getRightPlayer(String s){
+		Player x = getServer().getPlayerExact(s);
+
+		if(x == null){
+			for (OfflinePlayer pl: getServer().getOfflinePlayers()
+				 ) {
+				if(pl.getName().equalsIgnoreCase(s)){
+					x = (Player) pl;
+					break;
+				}
+			}
+		}
+
+		return x;
+	}
+
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
 		if(command.getName().equalsIgnoreCase("sl") || command.getName().equalsIgnoreCase("spawnerliste")){
 			//printArgs2Console(args);
@@ -39,7 +56,7 @@ public class MainPlugin extends JavaPlugin{
 							switch(args[1]){
 							case "add":
 								if(args.length > 2){
-									Player p = getServer().getPlayer(args[2]);
+									Player p = getRightPlayer(args[2]);
 									if(p == null){
 										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
 									}else{
@@ -52,7 +69,7 @@ public class MainPlugin extends JavaPlugin{
 								break;
 							case "dec":
 								if(args.length > 2){
-									Player p = getServer().getPlayer(args[2]);
+									Player p = getRightPlayer(args[2]);
 									if(p == null){
 										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
 									}else{
@@ -65,7 +82,7 @@ public class MainPlugin extends JavaPlugin{
 								break;
 							case "register":
 								if(args.length > 2){
-									Player p = getServer().getPlayer(args[2]);
+									Player p = getRightPlayer(args[2]);
 									if(p == null){
 										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
 									}else{
@@ -78,7 +95,7 @@ public class MainPlugin extends JavaPlugin{
 								break;
 							case "unregister":
 								if(args.length > 2){
-									Player p = getServer().getPlayer(args[2]);
+									Player p = getRightPlayer(args[2]);
 									if(p == null){
 										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
 									}else{
@@ -96,7 +113,7 @@ public class MainPlugin extends JavaPlugin{
 								break;
 							case "give":
 								if(args.length > 2){
-									Player p = getServer().getPlayer(args[2]);
+									Player p = getRightPlayer(args[2]);
 									if(p == null){
 										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
 									}else{
@@ -109,7 +126,7 @@ public class MainPlugin extends JavaPlugin{
 								break;
 							case "get":
 								if(args.length > 2){
-									Player p = getServer().getPlayer(args[2]);
+									Player p = getRightPlayer(args[2]);
 									if(p == null){
 										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
 									}else{

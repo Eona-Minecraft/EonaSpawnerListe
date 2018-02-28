@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="EonaSpawnerListe">
+    <output-path>$PROJECT_DIR$/out/artifacts/EonaSpawnerListe</output-path>
+    <root id="archive" name="EonaSpawnerListe.jar">
+      <element id="module-output" name="EonaSpawnerListe" />
+      <element id="file-copy" path="$PROJECT_DIR$/EonaSpawnerListe/plugin.yml" />
+    </root>
+  </artifact>
+</component>
