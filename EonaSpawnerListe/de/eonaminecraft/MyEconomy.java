@@ -18,7 +18,9 @@ public class MyEconomy {
 	            econ = rsp.getProvider();
 	        }
         }
+
 	}
+
 	
 	public boolean isEconInit(){
 		return econ != null;

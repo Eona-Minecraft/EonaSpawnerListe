@@ -38,7 +38,7 @@ public class MySQLDB {
 	
 	public void openConnections(){
 		try{
-			this.connection = DriverManager.getConnection("jdbc:mysql://" + a.getDbHost() + "/" + a.getDbName() + "?user=" + a.getDbUser() + "&password=" + a.getDbPass());
+			this.connection = DriverManager.getConnection("jdbc:mysql://" + a.getDbHost() + "/" + a.getDbName() + "?user=" + a.getDbUser() + "&password=" + a.getDbPass() + "&useSSL=false&autoreconnect=true");
 			opened = true;
 		}catch(Exception e){
 			l.info("Konnte keine Verbindung zur Datenbank aufbauen: ");
@@ -55,11 +55,11 @@ public class MySQLDB {
 			try{
 				return connection.createStatement().executeQuery(sql);
 			}catch(Exception e){
-				l.info("Konnte Abfrage nicht ausführen: " + sql );
+				l.info("Konnte Abfrage nicht ausfï¿½hren: " + sql );
 				l.info(e.getMessage());
 			}
 		}else{
-			l.info("Konnte Abfrage nicht ausführen: " + sql );
+			l.info("Konnte Abfrage nicht ausfï¿½hren: " + sql );
 			l.info("Datenbank-Verbindung nicht offen!");
 		}
 		return null;
@@ -71,11 +71,11 @@ public class MySQLDB {
 			try{
 				return connection.createStatement().executeUpdate(sql);
 			}catch(Exception e){
-				l.info("Konnte Abfrage nicht ausführen: " + sql );
+				l.info("Konnte Abfrage nicht ausfï¿½hren: " + sql );
 				l.info(e.getMessage());
 			}
 		}else{
-			l.info("Konnte Abfrage nicht ausführen: " + sql );
+			l.info("Konnte Abfrage nicht ausfï¿½hren: " + sql );
 			l.info("Datenbank-Verbindung nicht offen!");
 		}
 		return -1;
@@ -87,11 +87,11 @@ public class MySQLDB {
 				connection.close();
 				//l.info("DB-Verbindung geschlossen");
 			}catch(Exception e){
-				l.info("Konnte DB-Verbindung nicht schließen:");
+				l.info("Konnte DB-Verbindung nicht schlieï¿½en:");
 				l.info(e.getMessage());
 			}
 		}else{
-			l.info("Konnte DB-Verbindung nicht schließen, da nicht geöffnet!");
+			l.info("Konnte DB-Verbindung nicht schlieï¿½en, da nicht geï¿½ffnet!");
 		}
 			
 	}

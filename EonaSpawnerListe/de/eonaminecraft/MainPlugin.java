@@ -29,20 +29,30 @@ public class MainPlugin extends JavaPlugin{
 		
 	}
 
-	public Player getRightPlayer(String s){
-		Player x = getServer().getPlayerExact(s);
+    @Override
+    public void onDisable() {
+        super.onDisable();
+    }
 
-		if(x == null){
-			for (OfflinePlayer pl: getServer().getOfflinePlayers()
-				 ) {
-				if(pl.getName().equalsIgnoreCase(s)){
-					x = (Player) pl;
-					break;
-				}
+    public Player getOnlinePlayer(String s){
+		Player x = getServer().getPlayerExact(s);
+		return x;
+	}
+
+	public OfflinePlayer getOfflinePlayer(String s){
+		OfflinePlayer x = null;
+		for (OfflinePlayer pl: getServer().getOfflinePlayers()
+			 ) {
+			if (pl.getName().equalsIgnoreCase(s)){
+				x = pl;
+				break;
 			}
 		}
+		return  x;
+	}
 
-		return x;
+	private boolean isPlayerOnline(String s){
+		return (getServer().getPlayerExact(s) != null);
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
@@ -56,52 +66,97 @@ public class MainPlugin extends JavaPlugin{
 							switch(args[1]){
 							case "add":
 								if(args.length > 2){
-									Player p = getRightPlayer(args[2]);
-									if(p == null){
-										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+									if(isPlayerOnline(args[2])){
+										Player p = getOnlinePlayer(args[2]);
+										if(p == null){
+											sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+										}else{
+											liste.addSpawner(p.getUniqueId());
+											sender.sendMessage("Spieler '" + p.getDisplayName() + "' wurde 1 Spawner hinzugefügt");
+										}
 									}else{
-										liste.addSpawner(p.getUniqueId());
-										sender.sendMessage("Spieler '" + p.getDisplayName() + "' wurde 1 Spawner hinzugefügt");
+										OfflinePlayer p = getOfflinePlayer(args[2]);
+										if(p == null){
+											sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+										}else{
+											liste.addSpawner(p.getUniqueId());
+											sender.sendMessage("Spieler '" + p.getName() + "' wurde 1 Spawner hinzugefügt");
+										}
 									}
+
 								}else{
 									sender.sendMessage("Spieler wurde nicht angegeben");
 								}
 								break;
 							case "dec":
 								if(args.length > 2){
-									Player p = getRightPlayer(args[2]);
-									if(p == null){
-										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+									if(isPlayerOnline(args[2])){
+										Player p = getOnlinePlayer(args[2]);
+										if(p == null){
+											sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+										}else{
+											liste.decSpawner(p.getUniqueId());
+											sender.sendMessage("Spieler '" + p.getDisplayName() + "' wurde 1 Spawner entfernt");
+										}
 									}else{
-										liste.decSpawner(p.getUniqueId());
-										sender.sendMessage("Spieler '" + p.getDisplayName() + "' wurde 1 Spawner entfernt");
+										OfflinePlayer p = getOfflinePlayer(args[2]);
+										if(p == null){
+											sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+										}else{
+											liste.decSpawner(p.getUniqueId());
+											sender.sendMessage("Spieler '" + p.getName() + "' wurde 1 Spawner entfernt");
+										}
 									}
+
 								}else{
 									sender.sendMessage("Spieler wurde nicht angegeben");
 								}
 								break;
 							case "register":
 								if(args.length > 2){
-									Player p = getRightPlayer(args[2]);
-									if(p == null){
-										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+									if(isPlayerOnline(args[2])){
+										Player p = getOnlinePlayer(args[2]);
+										if(p == null){
+											sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+										}else{
+											liste.createNewEntry(p.getUniqueId());
+											sender.sendMessage("Spieler '" + p.getDisplayName() + "' hinzugefügt");
+										}
 									}else{
-										liste.createNewEntry(p.getUniqueId());
-										sender.sendMessage("Spieler '" + p.getDisplayName() + "' hinzugefügt");
+										OfflinePlayer p = getOfflinePlayer(args[2]);
+										if(p == null){
+											sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+										}else{
+											liste.createNewEntry(p.getUniqueId());
+											sender.sendMessage("Spieler '" + p.getName() + "' hinzugefügt");
+										}
 									}
+
 								}else{
 									sender.sendMessage("Spieler wurde nicht angegeben");
 								}
 								break;
 							case "unregister":
 								if(args.length > 2){
-									Player p = getRightPlayer(args[2]);
-									if(p == null){
-										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+									if(isPlayerOnline(args[2])){
+										Player p = getOnlinePlayer(args[2]);
+										if(p == null){
+											sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+										}else{
+											liste.deleteEntry(p.getUniqueId());
+											sender.sendMessage("Spieler '" + p.getDisplayName() + "' entfernt");
+										}
 									}else{
-										liste.deleteEntry(p.getUniqueId());
-										sender.sendMessage("Spieler '" + p.getDisplayName() + "' entfernt");
+										OfflinePlayer p = getOfflinePlayer(args[2]);
+										if(p == null){
+											sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+										}else{
+											liste.deleteEntry(p.getUniqueId());
+											sender.sendMessage("Spieler '" + p.getName() + "' entfernt");
+										}
 									}
+
+
 								}else{
 									sender.sendMessage("Spieler wurde nicht angegeben");
 								}
@@ -113,25 +168,39 @@ public class MainPlugin extends JavaPlugin{
 								break;
 							case "give":
 								if(args.length > 2){
-									Player p = getRightPlayer(args[2]);
-									if(p == null){
-										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+									if(isPlayerOnline(args[2])){
+										Player p = getOnlinePlayer(args[2]);
+										if(p == null){
+											sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+										}else{
+											liste.givePlayerMobSpawner(p);
+											sender.sendMessage("Spieler '" + p.getDisplayName() + "' wurde um 1 Spawner bereichert");
+										}
 									}else{
-										liste.givePlayerMobSpawner(p);
-										sender.sendMessage("Spieler '" + p.getDisplayName() + "' wurde um 1 Spawner bereichert");
+										sender.sendMessage("Spieler '" + args[2] + "' nicht online!");
 									}
+
 								}else{
 									sender.sendMessage("Spieler wurde nicht angegeben");
 								}
 								break;
 							case "get":
 								if(args.length > 2){
-									Player p = getRightPlayer(args[2]);
-									if(p == null){
-										sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
-									}else{
-										sender.sendMessage("Spieler '" + p.getDisplayName() + "' hat " + liste.getAnzahlSpawnerOfPlayer(p.getUniqueId())  + " Spawner" );
-									}
+								    if(isPlayerOnline(args[2])){
+                                        Player p = getOnlinePlayer(args[2]);
+                                        if(p == null){
+                                            sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+                                        }else{
+                                            sender.sendMessage("Spieler '" + p.getDisplayName() + "' hat " + liste.getAnzahlSpawnerOfPlayer(p.getUniqueId())  + " Spawner" );
+                                        }
+                                    }else{
+                                        OfflinePlayer p = getOfflinePlayer(args[2]);
+                                        if(p == null){
+                                            sender.sendMessage("Spieler '" + args[2] + "' nicht gefunden oder nicht online!");
+                                        }else{
+                                            sender.sendMessage("Spieler '" + p.getName() + "' hat " + liste.getAnzahlSpawnerOfPlayer(p.getUniqueId())  + " Spawner" );
+                                        }
+                                    }
 								}else{
 									sender.sendMessage("Spieler wurde nicht angegeben");
 								}
