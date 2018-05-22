@@ -38,7 +38,7 @@ public class MySQLDB {
 	
 	public void openConnections(){
 		try{
-			this.connection = DriverManager.getConnection("jdbc:mysql://" + a.getDbHost() + "/" + a.getDbName() + "?user=" + a.getDbUser() + "&password=" + a.getDbPass() + "&useSSL=false&autoreconnect=true");
+			this.connection = DriverManager.getConnection("jdbc:mysql://" + a.getDbHost() + "/" + a.getDbName() + "?user=" + a.getDbUser() + "&password=" + a.getDbPass() + "&useSSL=false&autoReconnect=true");
 			opened = true;
 		}catch(Exception e){
 			l.info("Konnte keine Verbindung zur Datenbank aufbauen: ");
