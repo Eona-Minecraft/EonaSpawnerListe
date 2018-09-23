@@ -147,7 +147,7 @@ public class SpawnerListe{
 	
 	
 	public void givePlayerMobSpawner(Player x){
-		x.getInventory().addItem(new ItemStack(Material.MOB_SPAWNER));
+		x.getInventory().addItem(new ItemStack(Material.SPAWNER));
 	}
 
 	public void addSpawner2Player(Player x){
